@@ -10,6 +10,7 @@ from wiki_utils import (
     get_language_name,
     get_native_language_name,
     split_content_into_sections,
+    display_collapsible_sections,
     LANGUAGE_DICT
 )
 from highlight_utils import (
@@ -90,6 +91,27 @@ st.markdown("""
         background-color: #BBDEFB;
         border-color: #1565C0;
     }
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+    /* Style the buttons to look like tags */
+    .stButton button {
+        background-color: #E3F2FD;
+        color: #1565C0;
+        border-radius: 20px;
+        border: 1px solid #BBDEFB;
+        padding: 4px 12px;
+        font-weight: 500;
+        margin: 4px 0;
+        transition: all 0.2s;
+    }
+    .stButton button:hover {
+        background-color: #BBDEFB;
+        border-color: #1565C0;
+    }
     mark {
         background-color: #FFFF00;
         padding: 0 2px;
@@ -158,42 +180,26 @@ with st.sidebar:
                 st.session_state.current_language = search_lang
                 st.session_state.show_translation = False
     
-    # Show search results if available - as tags now
+    # Show search results if available
     if st.session_state.search_results:
         st.write("### Search Results")
-        # Use columns to create a tag-like display
-        cols = st.columns([1, 1])
+        
+        # Use multiple columns to create a cleaner tag layout
+        cols = st.columns(3)
+        
+        # Display each result as a clickable button styled as a tag
         for idx, result in enumerate(st.session_state.search_results):
-            col_idx = idx % 2
-            with cols[col_idx]:
-                tag_html = f"""
-                <div class="search-tag" onclick="
-                    const data = {{value: '{result}'}};
-                    window.parent.postMessage({{
-                        type: 'streamlit:setComponentValue',
-                        selectedTag: data
-                    }}, '*');
-                ">
-                    {result}
-                </div>
-                """
-                st.markdown(tag_html, unsafe_allow_html=True)
-        
-        # Hidden component to receive the tag click
-        selected_tag = st.text_input("", key="selected_tag", label_visibility="collapsed")
-        
-        if selected_tag:
-            with st.spinner(f"Loading article: {selected_tag}..."):
-                st.session_state.current_article = get_article_content(selected_tag, st.session_state.current_language)
-                if st.session_state.current_article:
-                    st.session_state.available_languages = get_available_languages(
-                        selected_tag, 
-                        st.session_state.current_language
-                    )
-                    st.session_state.show_translation = False
-                    # Clear the selected tag after loading
-                    st.session_state.selected_tag = ""
-                    st.rerun()
+            with cols[idx % 3]:  # Distribute results across 3 columns
+                if st.button(result, key=f"result_{idx}", use_container_width=True):
+                    with st.spinner(f"Loading article: {result}..."):
+                        st.session_state.current_article = get_article_content(result, st.session_state.current_language)
+                        if st.session_state.current_article:
+                            st.session_state.available_languages = get_available_languages(
+                                result, 
+                                st.session_state.current_language
+                            )
+                            st.session_state.show_translation = False
+                            st.rerun()
     
     # Translation settings
     if st.session_state.current_article:
