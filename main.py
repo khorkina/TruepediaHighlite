@@ -129,10 +129,12 @@ st.markdown("""
     }
     .highlight-instructions {
         background-color: #FFF9C4;
+        color: #333333;
         padding: 10px;
         border-radius: 5px;
         margin-bottom: 10px;
         font-size: 0.9rem;
+        border: 1px solid #FBC02D;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -182,15 +184,20 @@ with st.sidebar:
     
     # Show search results if available
     if st.session_state.search_results:
-        st.write("### Search Results")
+        st.markdown("### 🔍 Search Results")
+        
+        # Add a styled container for search results
+        st.markdown('<div style="background-color: #E3F2FD; padding: 15px; border-radius: 8px; border: 1px solid #BBDEFB;">', 
+                   unsafe_allow_html=True)
         
         # Use multiple columns to create a cleaner tag layout
-        cols = st.columns(3)
+        cols = st.columns(2)
         
         # Display each result as a clickable button styled as a tag
         for idx, result in enumerate(st.session_state.search_results):
-            with cols[idx % 3]:  # Distribute results across 3 columns
-                if st.button(result, key=f"result_{idx}", use_container_width=True):
+            with cols[idx % 2]:  # Distribute results across 2 columns for better visibility
+                # Custom button style with more padding and distinctive appearance
+                if st.button(f"🏷️ {result}", key=f"result_{idx}", use_container_width=True):
                     with st.spinner(f"Loading article: {result}..."):
                         st.session_state.current_article = get_article_content(result, st.session_state.current_language)
                         if st.session_state.current_article:
@@ -200,23 +207,29 @@ with st.sidebar:
                             )
                             st.session_state.show_translation = False
                             st.rerun()
+        
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Translation settings
     if st.session_state.current_article:
-        st.subheader("Translation")
+        st.markdown("### 🌐 Translation")
+        st.markdown('<div style="padding: 10px; background-color: #E8F5E9; border-radius: 5px; border: 1px solid #81C784;">',
+                  unsafe_allow_html=True)
         st.session_state.translate_to = st.selectbox(
-            "Translate To",
+            "Translate Article To",
             options=list(LANGUAGE_DICT.keys()),
             format_func=lambda x: f"{get_language_name(x)} ({x})",
             key="translate_lang"
         )
         
-        if st.button("Translate Article"):
+        if st.button("Translate Article", use_container_width=True):
             st.session_state.show_translation = True
+            
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Highlighting controls
     if st.session_state.current_article:
-        st.subheader("Collaborative Highlighting")
+        st.markdown("### ✏️ Collaborative Highlighting")
         
         highlight_toggle = st.toggle("Enable Highlighting Mode", value=st.session_state.highlight_mode)
         if highlight_toggle != st.session_state.highlight_mode:
@@ -225,8 +238,9 @@ with st.sidebar:
             
         if st.session_state.highlight_mode:
             st.markdown("""
-            <div class="highlight-instructions">
-                <strong>How to highlight:</strong><br>
+            <div style="background-color: #FFF9C4; color: #333333; padding: 12px; border-radius: 5px; 
+                        margin-bottom: 10px; font-size: 0.9rem; border: 1px solid #FBC02D;">
+                <b style="font-size: 1rem;">How to highlight:</b><br>
                 1. Select text in the article<br>
                 2. Click 'Save Highlight'<br>
                 3. Your highlights will be visible to all users

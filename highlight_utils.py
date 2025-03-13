@@ -150,9 +150,7 @@ def create_highlight_interface(text, article_id, context):
             if highlight_text in text:
                 save_highlight(article_id, highlight_text, context)
                 st.success("Highlight saved! It will now be visible to all users.")
-                # Clear the input
-                st.session_state[f"highlight_input_{context}"] = ""
-                # Rerun to show the highlight
+                # Rerun to show the highlight without trying to clear the input
                 st.rerun()
             else:
                 st.error("The text you entered wasn't found in this section. Please try again with exact text.")
