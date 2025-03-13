@@ -137,22 +137,22 @@ def create_highlight_interface(text, article_id, context):
     """
     # Text input for the highlighted text
     highlight_text = st.text_area(
-        "Text to highlight:", 
+        "Part for review:", 
         key=f"highlight_input_{context}",
-        help="Enter the exact text you want to highlight"
+        help="Enter the exact text from the article that you want to review"
     )
     
     # Save highlight button
-    if st.button("Save Highlight", key=f"highlight_btn_{context}", 
-                 help="Save this highlight for all users to see"):
+    if st.button("Mark for Review", key=f"highlight_btn_{context}", 
+                 help="Mark this text for review - visible to all users"):
         if highlight_text:
             # Check if the text is actually in the content
             if highlight_text in text:
                 save_highlight(article_id, highlight_text, context)
-                st.success("Highlight saved! It will now be visible to all users.")
+                st.success("Section marked for review! It will now be visible to all users.")
                 # Rerun to show the highlight without trying to clear the input
                 st.rerun()
             else:
-                st.error("The text you entered wasn't found in this section. Please try again with exact text.")
+                st.error("The text you entered wasn't found in this section. Please copy and paste the exact text from the article.")
         else:
-            st.warning("Please enter some text to highlight.")
+            st.warning("Please enter some text to mark for review.")

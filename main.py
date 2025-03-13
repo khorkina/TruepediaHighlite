@@ -229,9 +229,9 @@ with st.sidebar:
     
     # Highlighting controls
     if st.session_state.current_article:
-        st.markdown("### ✏️ Collaborative Highlighting")
+        st.markdown("### ✏️ Collaborative Review")
         
-        highlight_toggle = st.toggle("Enable Highlighting Mode", value=st.session_state.highlight_mode)
+        highlight_toggle = st.toggle("Enable Review Mode", value=st.session_state.highlight_mode)
         if highlight_toggle != st.session_state.highlight_mode:
             st.session_state.highlight_mode = highlight_toggle
             st.rerun()
@@ -240,10 +240,11 @@ with st.sidebar:
             st.markdown("""
             <div style="background-color: #FFF9C4; color: #333333; padding: 12px; border-radius: 5px; 
                         margin-bottom: 10px; font-size: 0.9rem; border: 1px solid #FBC02D;">
-                <b style="font-size: 1rem;">How to highlight:</b><br>
-                1. Select text in the article<br>
-                2. Click 'Save Highlight'<br>
-                3. Your highlights will be visible to all users
+                <b style="font-size: 1rem;">How to mark text for review:</b><br>
+                1. Copy text from the article you want to review<br>
+                2. Paste it in the "Part for review" box<br>
+                3. Click 'Mark for Review'<br>
+                4. Marked sections will be visible to all users
             </div>
             """, unsafe_allow_html=True)
     
